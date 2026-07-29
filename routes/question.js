@@ -1,16 +1,16 @@
 const express = require("express");
 const router = require("router");
-const { Quesiton } = require("../models");
+const { Question } = require("../models");
 
 //Gets all Question
 router.get("/", async (req, res) => {
-  const question = await Quesiton.findAll();
+  const question = await Question.findAll();
   res.json(question);
 });
 
-//Get Quesiton by ID #
+//Get Question by ID #
 router.get("/:id", async (req, res) => {
-  const question = await Quesiton.findByPK(req.params.id);
+  const question = await Question.findByPK(req.params.id);
   if (!question) {
     return res.status(404).json({ error: "Question not found!" });
   }
