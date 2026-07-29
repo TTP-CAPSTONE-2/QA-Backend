@@ -8,6 +8,10 @@ const Question = require("./question.model");
 //   User.hasMany(Task)     // one user has many tasks
 //   Task.belongsTo(User)   // each task belongs to one user (adds a userId column)
 
+Question.hasMany(Answer)
+Answer.belongsTo(Question)
+
+
 module.exports = {
   db,
   Task,
