@@ -28,7 +28,7 @@ const seed = async () => {
 
     await Answer.bulkCreate([
       {
-        body: "Make sure your .env file has the correct DATABASE_URL.",
+        content: "Make sure your .env file has the correct DATABASE_URL.",
         questionId: questions[0].id,
         // userId: users[1].id,
       },
