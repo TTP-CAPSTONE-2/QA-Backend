@@ -9,7 +9,7 @@ const { rateLimit } = require("express-rate-limit");
 const { db } = require("./models");
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 
 // Deployed apps sit behind a proxy (Render, ...). This tells Express
 // to trust it, so rate-limiting sees the real visitor IP and secure cookies work.
