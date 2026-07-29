@@ -6,7 +6,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { rateLimit } = require('express-rate-limit');
 
-const { db } = require('./models');
+const { db, Task } = require('./models');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
