@@ -5,7 +5,6 @@ const morgan = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
 const { rateLimit } = require("express-rate-limit");
-const questionRouter = require('./routes/question')
 
 const { db, Task } = require("./models");
 
@@ -13,6 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const answerRouter = require('./routes/answer')
+const questionRouter = require('./routes/question')
 
 // Deployed apps sit behind a proxy (Render, ...). This tells Express
 // to trust it, so rate-limiting sees the real visitor IP and secure cookies work.
@@ -39,7 +39,6 @@ app.use(
 app.use(morgan("dev")); // logs each request to the terminal (handy for debugging)
 app.use(express.json({ limit: "10kb" })); // parse JSON bodies into req.body; cap the size
 app.use(limiter);
-app.use('/questions', questionRouter)
 app.use(express.static(path.join(__dirname, "public"))); // serve the info page in /public
 
 // ---------- health check ----------
@@ -56,6 +55,7 @@ app.get("/tasks", async (req, res) => {
 // ---------- API routes ----------
 // Mount each resource router under /api. Add your own the same way:
   app.use('/api/questions', answerRouter)
+  app.use('/api/questions', questionRouter)
 
 // ---------- 404 ----------
 // Nothing above matched, so the thing doesn't exist. Send a clear JSON 404.

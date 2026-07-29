@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Question } = require("../models");
+const { Question, Answer } = require("../models");
 
 //Gets all Question
 router.get("/", async (req, res) => {
@@ -15,7 +15,9 @@ router.get("/", async (req, res) => {
 //Get Question by ID #
 router.get("/:id", async (req, res) => {
   try {
-    const question = await Question.findByPk(req.params.id);
+    const question = await Question.findByPk(Number(req.params.id), {
+      include: Answer
+    });
     if (!question) {
       return res.status(404).json({ error: "Question not found!" });
     }
