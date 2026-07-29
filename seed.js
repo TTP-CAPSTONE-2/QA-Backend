@@ -1,43 +1,44 @@
 // db/seed.js — reset the tables and fill them with sample data.  Run: npm run seed
 // Gives you (and your teammates) the same predictable rows to build against.
 require("dotenv").config();
-const { db, Question } = require("./models");
+const { db, User, Question, Answer } = require("./models");
 
 const seed = async () => {
   try {
-    // force: true DROPS every table and recreates it empty.
-    // Perfect for a seed script — never do this to real user data.
     await db.sync({ force: true });
     console.log("🌱 Database reset.");
 
-    // bulkCreate inserts several rows in one go.
-    await Task.bulkCreate([
+    // const users = await User.bulkCreate([
+    //   { username: "coder123", email: "coder@example.com" },
+    //   { username: "dev_guru", email: "guru@example.com" },
+    // ]);
+
+    const questions = await Question.bulkCreate([
       {
-        title: "Set up the project",
-        description: "Clone the repo and run npm install",
-        completed: true,
+        title: "How do I connect Sequelize to Postgres?",
+        body: "I am trying to set up my connection string but keep getting errors.",
+        // userId: users[0].id,
       },
       {
-        title: "Create the database",
-        description: "Run createdb capstone_dev",
-        completed: true,
-      },
-      {
-        title: "Build my first model",
-        description: "Copy the Task model as a reference",
-        completed: false,
-      },
-      {
-        title: "Write my first route",
-        description: "Add a CRUD router under /api",
-        completed: false,
+        title: "What is the difference between let and var?",
+        body: "When should I use let instead of var in modern JavaScript?",
+        // userId: users[1].id,
       },
     ]);
-    console.log("🌱 Sample tasks created.");
+
+    await Answer.bulkCreate([
+      {
+        body: "Make sure your .env file has the correct DATABASE_URL.",
+        questionId: questions[0].id,
+        // userId: users[1].id,
+      },
+    ]);
+
+    console.log("🌱 Sample Q&A data created.");
   } catch (err) {
     console.error("❌ Seed failed:", err.message);
   } finally {
-    await db.close(); // close the connection so the script can exit
+    await db.close();
     console.log("🌱 Done. Connection closed.");
   }
 };
