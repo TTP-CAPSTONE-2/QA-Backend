@@ -5,8 +5,9 @@ const morgan = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
 const { rateLimit } = require("express-rate-limit");
+const questionRouter = require('./routes/question')
 
-const { db } = require("./models");
+const { db, Task } = require("./models");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -36,6 +37,7 @@ app.use(
 app.use(morgan("dev")); // logs each request to the terminal (handy for debugging)
 app.use(express.json({ limit: "10kb" })); // parse JSON bodies into req.body; cap the size
 app.use(limiter);
+app.use('/questions', questionRouter)
 app.use(express.static(path.join(__dirname, "public"))); // serve the info page in /public
 
 // ---------- health check ----------
