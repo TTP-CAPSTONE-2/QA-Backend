@@ -63,6 +63,21 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+//Delete a Question by ID#
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const question = await Question.findByPk(Number(req.params.id));
+
+    if (!question) {
+      return res.status(404).json({ error: "Question not found!" });
+    }
+    await question.destroy();
+    return res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+});
+
 //Make a new Question
 router.post("/", async (req, res) => {
   try {
