@@ -12,10 +12,10 @@ const User = require('./user.model')
 Question.hasMany(Answer)
 Answer.belongsTo(Question)
 
-User.hasMany(Question)
-User.hasMany(Answer) 
-Question.belongsTo(User)
-Answer.belongsTo(User)
+// User.hasMany(Question)
+// User.hasMany(Answer) 
+// Question.belongsTo(User)
+// Answer.belongsTo(User)
 
 module.exports = {
   db,
