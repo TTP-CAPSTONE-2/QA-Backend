@@ -30,6 +30,24 @@ router.patch("/:id/upvote", async (req, res) => {
   }
 });
 
+// Downvote a question
+router.patch("/:id/downvote", async (req, res) => {
+  try {
+    const question = await Question.findByPk(Number(req.params.id));
+
+    if (!question) {
+      return res.status(404).json({ error: "Question not found!" });
+    }
+
+    question.votes = (question.votes || 0) - 1;
+    await question.save();
+
+    res.json(question);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 //Get Question by ID #
 router.get("/:id", async (req, res) => {
   try {
