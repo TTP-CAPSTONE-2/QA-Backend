@@ -3,7 +3,7 @@ const db = require('../db/index')
 
 const Answer = db.define('answer', {
     content: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
     }
 })
