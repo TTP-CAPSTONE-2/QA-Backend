@@ -81,7 +81,7 @@ const startServer = async () => {
     await db.authenticate();
     console.log("🐘 Database connection established.");
 
-    await db.sync();
+    await db.sync({ alter: true });
     console.log("🧩 Models synced.");
 
     const server = app.listen(PORT, () => {
