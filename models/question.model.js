@@ -10,6 +10,11 @@ const Question = db.define("question", {
     type: DataTypes.TEXT,
     allowNull: false,
   },
+  votes: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  },
 });
 
 module.exports = Question;

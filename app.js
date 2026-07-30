@@ -11,12 +11,12 @@ const { db, Task } = require("./models");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const answerRouter = require('./routes/answer')
-const questionRouter = require('./routes/question')
+const answerRouter = require("./routes/answer");
+const questionRouter = require("./routes/question");
 
 // Deployed apps sit behind a proxy (Render, ...). This tells Express
 // to trust it, so rate-limiting sees the real visitor IP and secure cookies work.
-app.set("trust proxy", 1)
+app.set("trust proxy", 1);
 
 // Stop any one IP from spamming the server.
 const limiter = rateLimit({
@@ -54,8 +54,8 @@ app.get("/tasks", async (req, res) => {
 
 // ---------- API routes ----------
 // Mount each resource router under /api. Add your own the same way:
-  app.use('/api/questions', answerRouter)
-  app.use('/api/questions', questionRouter)
+app.use("/api/questions", answerRouter);
+app.use("/api/questions", questionRouter);
 
 // ---------- 404 ----------
 // Nothing above matched, so the thing doesn't exist. Send a clear JSON 404.
@@ -81,7 +81,7 @@ const startServer = async () => {
     await db.authenticate();
     console.log("🐘 Database connection established.");
 
-    await db.sync();
+    await db.sync({ alter: true });
     console.log("🧩 Models synced.");
 
     const server = app.listen(PORT, () => {
