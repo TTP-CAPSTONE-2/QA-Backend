@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 
 
 router.post('/auth/register', async (req, res) => {
+    console.log("register route hit")
     const {name, email, password} = req.body
     const userMatch = await User.findOne({
         where: {
@@ -37,15 +38,14 @@ router.post('/auth/login', async (req, res) => {
         }
     })
     if(!matchedUser) {
-        return res.status(404).json({error: 'Invalid credentials'})
-    }
+        return res.status(401).json({error: 'Invalid credentials'})    }
 
     // Backend verifies password
 
     const isMatch = await bcrypt.compare(password ,matchedUser.password)
 
     if(!isMatch) {
-        return res.status(404).json({error: 'Invalid credentials'})
+        return res.status(401).json({error: 'Invalid credentials'})
 
     }
     // Backend creates a session for that user
@@ -55,9 +55,12 @@ router.post('/auth/login', async (req, res) => {
     console.log(req.session)
 
     res.status(200).json({
-        message: "Logged in",
-        userId: req.session.userId
-    })
+        isLoggedIn: true,
+        user: {
+            name: matchedUser.name,
+            email: matchedUser.email
+        }
+})
 })
 router.get('/auth/me', async (req, res) => {
 
@@ -73,18 +76,22 @@ router.get('/auth/me', async (req, res) => {
         }
 
         return res.json({
-            name: loggedUser.get('name'),
-            email: loggedUser.get('email')
+            isLoggedIn: true,
+            user: {
+                name: loggedUser.get('name'),
+                email: loggedUser.get('email'),
+            }
         })
     }
 
     return res.json({
-        loggedIn: false
+        isLoggedIn: false,
+        user: null
     })
 })
 
 router.get('/auth/logout', (req, res) => {
-    req.session.destroy((err) => {2
+    req.session.destroy((err) => {
         if (err) {
             return res.status(500).send('Failed to logout');
         }
