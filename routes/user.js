@@ -1,11 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const { User } = require('../models/index')
+const bcrypt = require('bcrypt')
 
-router.post('auth/register', async (req, res) => {
+
+router.post('/auth/register', async (req, res) => {
     const {name, email, password} = req.body
-
-    // try to see if user exists
     const userMatch = await User.findOne({
         where: {
             email: email
@@ -25,3 +25,71 @@ router.post('auth/register', async (req, res) => {
     })
 
 })
+
+router.post('/auth/login', async (req, res) => {
+    const {email, password} = req.body
+    //User logs in
+
+    // Backend verifies email
+    const matchedUser = await User.findOne({
+        where: {
+            email:email,
+        }
+    })
+    if(!matchedUser) {
+        return res.status(404).json({error: 'Invalid credentials'})
+    }
+
+    // Backend verifies password
+
+    const isMatch = await bcrypt.compare(password ,matchedUser.password)
+
+    if(!isMatch) {
+        return res.status(404).json({error: 'Invalid credentials'})
+
+    }
+    // Backend creates a session for that user
+
+    req.session.userId = matchedUser.id
+
+    console.log(req.session)
+
+    res.status(200).json({
+        message: "Logged in",
+        userId: req.session.userId
+    })
+})
+router.get('/auth/me', async (req, res) => {
+
+    if(req.session.userId) {
+
+        const loggedUser = await User.findOne({
+            where: {
+                id: req.session.userId
+            }
+        })
+        if(!loggedUser) {
+            return res.status(404).json({error: "Could not find user"})
+        }
+
+        return res.json({
+            name: loggedUser.get('name'),
+            email: loggedUser.get('email')
+        })
+    }
+
+    return res.json({
+        loggedIn: false
+    })
+})
+
+router.get('/auth/logout', (req, res) => {
+    req.session.destroy((err) => {2
+        if (err) {
+            return res.status(500).send('Failed to logout');
+        }
+        res.json({message: "logged out successfully"})
+    });
+})
+
+module.exports = router

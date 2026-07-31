@@ -2,6 +2,8 @@ require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const morgan = require("morgan");
+const session = require('express-session');
+const { v4: uuidv4 } = require('uuid');
 const cors = require("cors");
 const helmet = require("helmet");
 const { rateLimit } = require("express-rate-limit");
@@ -13,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 
 const answerRouter = require("./routes/answer");
 const questionRouter = require("./routes/question");
-
+const userRouter = require('./routes/user')
 // Deployed apps sit behind a proxy (Render, ...). This tells Express
 // to trust it, so rate-limiting sees the real visitor IP and secure cookies work.
 app.set("trust proxy", 1);
@@ -40,6 +42,15 @@ app.use(morgan("dev")); // logs each request to the terminal (handy for debuggin
 app.use(express.json({ limit: "10kb" })); // parse JSON bodies into req.body; cap the size
 app.use(limiter);
 app.use(express.static(path.join(__dirname, "public"))); // serve the info page in /public
+app.use(session({
+  genid: function (req) {
+    return uuidv4();
+  },
+  secret: '=fmLV*U@FL`N]]~/zqtFCch.pBTGoU',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 60 * 60 * 1000 }
+}));
 
 // ---------- health check ----------
 // A tiny endpoint to quickly confirm the server is up.
@@ -56,6 +67,7 @@ app.get("/tasks", async (req, res) => {
 // Mount each resource router under /api. Add your own the same way:
 app.use("/api/questions", answerRouter);
 app.use("/api/questions", questionRouter);
+app.use("/api", userRouter)
 
 // ---------- 404 ----------
 // Nothing above matched, so the thing doesn't exist. Send a clear JSON 404.
