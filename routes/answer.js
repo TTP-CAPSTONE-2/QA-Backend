@@ -10,7 +10,7 @@ router.post('/:id/answers', requireAuth, async (req, res) => {
         return res.status(404).json('Error, question doesnt exist')
     }
 
-    const answer = await Answer.create({content: req.body.content , questionId: questionId})
+    const answer = await Answer.create({content: req.body.content , questionId: questionId, userId: req.session.userId})
 
     res.status(201).json(answer)
 })
