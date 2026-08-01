@@ -4,6 +4,7 @@ function requireAuth(req, res, next) {
             error: "You must be logged in"
         })
     }
+    next()
 }   
 
 module.exports = requireAuth

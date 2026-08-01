@@ -48,7 +48,7 @@ app.use(session({
   },
   secret: '=fmLV*U@FL`N]]~/zqtFCch.pBTGoU',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: { maxAge: 60 * 60 * 1000 }
 }));
 
