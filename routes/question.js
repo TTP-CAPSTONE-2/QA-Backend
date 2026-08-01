@@ -52,11 +52,32 @@ router.patch("/:id/downvote", async (req, res) => {
 //Get Question by ID #
 router.get("/:id", async (req, res) => {
   try {
+    // const question = await Question.findByPk(Number(req.params.id), {
+    //   include: [Answer, {
+    //     model: User,
+    //     attributes: ['name', 'email']
+    //   }]
+    // });
+    // this new way allows the questions to include the answers, and answers to include the user data for the
+    // person who also answered it
+
     const question = await Question.findByPk(Number(req.params.id), {
-      include: [Answer, {
-        model: User,
-        attributes: ['name', 'email']
-      }]
+      include: [
+        {
+          model: User,
+          attributes: ['name', 'email']
+        },
+        {
+          model: Answer,
+          include: [
+            {
+              model: User,
+              attributes: ['name', 'email']
+            }
+          ]
+        },
+      ]
+
     });
     if (!question) {
       return res.status(404).json({ error: "Question not found!" });
