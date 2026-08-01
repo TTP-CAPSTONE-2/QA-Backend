@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { Question, Answer } = require("../models");
+const { Question, Answer, User } = require("../models");
+const requireAuth = require('../middleware/requireAuth')
 
 //Gets all Question
 router.get("/", async (req, res) => {
@@ -52,7 +53,10 @@ router.patch("/:id/downvote", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const question = await Question.findByPk(Number(req.params.id), {
-      include: Answer,
+      include: [Answer, {
+        model: User,
+        attributes: ['name', 'email']
+      }]
     });
     if (!question) {
       return res.status(404).json({ error: "Question not found!" });
@@ -79,7 +83,7 @@ router.delete("/:id", async (req, res, next) => {
 });
 
 //Make a new Question
-router.post("/", async (req, res) => {
+router.post("/", requireAuth, async (req, res) => {
   try {
     const { title, body } = req.body;
 
@@ -90,6 +94,7 @@ router.post("/", async (req, res) => {
     const question = await Question.create({
       title,
       body,
+      userId: req.session.userId
     });
 
     res.status(201).json(question);
